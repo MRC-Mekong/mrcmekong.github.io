@@ -282,57 +282,64 @@
 
   setVenueDay(1);
 
-  /* ---------- Carousel ---------- */
-  const track = document.getElementById('carouselTrack');
-  const prevBtn = document.querySelector('.carousel-btn--prev');
-  const nextBtn = document.querySelector('.carousel-btn--next');
-  if (track) {
-    const scrollByAmount = () => track.querySelector('.carousel-slide').offsetWidth + 22;
-
-    let autoplayTimer = null;
-    function stopAutoplay() { clearInterval(autoplayTimer); autoplayTimer = null; }
-    function startAutoplay() {
-      stopAutoplay();
-      autoplayTimer = setInterval(() => {
-        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
-        track.scrollBy({ left: atEnd ? -track.scrollLeft : scrollByAmount(), behavior: 'smooth' });
-      }, 3800);
-    }
-    startAutoplay();
-    track.addEventListener('mouseenter', stopAutoplay);
-    track.addEventListener('mouseleave', startAutoplay);
-    track.addEventListener('focusin', stopAutoplay);
-    track.addEventListener('focusout', startAutoplay);
-
-    prevBtn.addEventListener('click', () => { stopAutoplay(); track.scrollBy({ left: -scrollByAmount(), behavior: 'smooth' }); startAutoplay(); });
-    nextBtn.addEventListener('click', () => { stopAutoplay(); track.scrollBy({ left: scrollByAmount(), behavior: 'smooth' }); startAutoplay(); });
-
-    // Click-and-drag scrolling for mouse users (touch already scrolls natively)
-    let isDragging = false, dragStartX = 0, dragStartScroll = 0, dragMoved = false;
-    track.addEventListener('mousedown', (e) => {
-      isDragging = true; dragMoved = false;
-      dragStartX = e.pageX; dragStartScroll = track.scrollLeft;
-      stopAutoplay();
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const delta = e.pageX - dragStartX;
-      if (Math.abs(delta) > 4) dragMoved = true;
-      track.scrollLeft = dragStartScroll - delta;
-    });
-    window.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      startAutoplay();
-    });
-    // Prevent the trailing click of a drag from activating slide links/buttons
-    track.addEventListener('click', (e) => { if (dragMoved) { e.preventDefault(); e.stopPropagation(); } }, true);
-  }
-
   /* ---------- Back to top ---------- */
   const backToTop = document.getElementById('backToTop');
   if (backToTop) {
     backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
+  /* ---------- Conference recap video: load + autoplay (muted) on scroll into view ---------- */
+  const conferenceVideo = document.getElementById('conferenceVideo');
+  if (conferenceVideo) {
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const src = conferenceVideo.getAttribute('data-src');
+          conferenceVideo.setAttribute('src', src + '&autoplay=1');
+          videoObserver.unobserve(conferenceVideo);
+        }
+      });
+    }, { threshold: 0.5 });
+    videoObserver.observe(conferenceVideo);
+  }
+
+  /* ---------- KV animation: chroma-key the grey-green background to transparent ---------- */
+  const kvVideo = document.getElementById('kvVideoSource');
+  const kvCanvas = document.getElementById('kvCanvas');
+  if (kvVideo && kvCanvas && kvCanvas.getContext) {
+    const ctx = kvCanvas.getContext('2d', { willReadFrequently: true });
+    const RENDER_SIZE = 640;
+    kvCanvas.width = RENDER_SIZE;
+    kvCanvas.height = RENDER_SIZE;
+
+    // Sampled from the source video's background
+    const keyR = 74, keyG = 102, keyB = 111;
+    const threshold = 34;      // fully transparent within this color distance
+    const softness = 30;       // soft falloff band beyond the threshold
+    const thresholdSq = threshold * threshold;
+    const softMaxSq = (threshold + softness) * (threshold + softness);
+
+    let rafId = null;
+    function renderFrame() {
+      if (kvVideo.readyState >= 2) {
+        ctx.drawImage(kvVideo, 0, 0, RENDER_SIZE, RENDER_SIZE);
+        const frame = ctx.getImageData(0, 0, RENDER_SIZE, RENDER_SIZE);
+        const data = frame.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const dr = data[i] - keyR, dg = data[i + 1] - keyG, db = data[i + 2] - keyB;
+          const distSq = dr * dr + dg * dg + db * db;
+          if (distSq < thresholdSq) {
+            data[i + 3] = 0;
+          } else if (distSq < softMaxSq) {
+            const dist = Math.sqrt(distSq);
+            data[i + 3] = Math.round(255 * (dist - threshold) / softness);
+          }
+        }
+        ctx.putImageData(frame, 0, 0);
+      }
+      rafId = requestAnimationFrame(renderFrame);
+    }
+    rafId = requestAnimationFrame(renderFrame);
   }
 
   /* ---------- FAQ accordion ---------- */
