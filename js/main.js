@@ -6,6 +6,78 @@
   const navLinks = document.querySelectorAll('[data-nav]');
   const backToTopBtn = document.getElementById('backToTop');
 
+  /* ---------- Explore button: centered between hero headline and info bar ---------- */
+  const hero = document.querySelector('.hero');
+  const heroHeadline = document.querySelector('.hero-headline');
+  const heroExplore = document.getElementById('heroExplore');
+  const heroInfobar = document.getElementById('heroInfobar');
+  function positionHeroExplore() {
+    if (!hero || !heroHeadline || !heroExplore || !heroInfobar) return;
+    const heroTop = hero.getBoundingClientRect().top;
+    const headlineBottom = heroHeadline.getBoundingClientRect().bottom - heroTop;
+    const infobarTop = heroInfobar.getBoundingClientRect().top - heroTop;
+    const exploreHeight = heroExplore.offsetHeight;
+    const midpoint = headlineBottom + (infobarTop - headlineBottom) / 2;
+    heroExplore.style.top = Math.max(0, midpoint - exploreHeight / 2) + 'px';
+  }
+  positionHeroExplore();
+  window.addEventListener('resize', positionHeroExplore);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(positionHeroExplore);
+  }
+  // Re-measure after the reveal-on-scroll transform (translateY) settles,
+  // since measuring mid-transition bakes in a stale offset.
+  [heroHeadline, heroExplore, heroInfobar].forEach(el => {
+    if (el) el.addEventListener('transitionend', positionHeroExplore);
+  });
+  setTimeout(positionHeroExplore, 1200);
+
+  /* ---------- River divider: fades in smoothly as it scrolls into view ---------- */
+  const riverDivider = document.getElementById('riverDivider');
+  const riverImg = document.getElementById('riverImg');
+  if (riverDivider && riverImg) {
+    function updateRiver() {
+      const rect = riverDivider.getBoundingClientRect();
+      const vh = window.innerHeight;
+      let progress = (vh - rect.top) / (vh + rect.height);
+      progress = Math.min(1, Math.max(0, progress));
+      riverImg.style.opacity = progress;
+    }
+    updateRiver();
+    window.addEventListener('scroll', updateRiver, { passive: true });
+    window.addEventListener('resize', updateRiver);
+  }
+
+  /* ---------- River caption: types in once the divider is in view ---------- */
+  const riverCaptionClip = document.getElementById('riverCaptionClip');
+  const riverCaption = document.getElementById('riverCaption');
+  if (riverCaptionClip && riverCaption) {
+    function fitCaptionSize() {
+      const containerWidth = riverDivider.clientWidth;
+      const targetWidth = Math.min(containerWidth * 0.86, 1116);
+      riverCaption.style.fontSize = '16px';
+      const baseWidth = riverCaption.scrollWidth;
+      const newSize = Math.max(16, 16 * (targetWidth / baseWidth));
+      riverCaption.style.fontSize = newSize + 'px';
+    }
+    function measureCaption() {
+      fitCaptionSize();
+      riverCaptionClip.style.setProperty('--caption-w', riverCaption.scrollWidth + 'px');
+    }
+    measureCaption();
+    window.addEventListener('resize', measureCaption);
+    const captionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          measureCaption();
+          riverCaptionClip.classList.add('is-typing');
+          captionObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    captionObserver.observe(riverCaptionClip);
+  }
+
   /* ---------- Header scroll state + scroll progress ---------- */
   function onScroll() {
     const y = window.scrollY;
@@ -91,6 +163,30 @@
     const el = document.getElementById(s.id);
     if (el) spyObserver.observe(el);
   });
+
+  /* ---------- Hero countdown to opening (2 Apr 2027, Bangkok time UTC+7) ---------- */
+  const heroCountdown = document.getElementById('heroCountdown');
+  if (heroCountdown) {
+    const opening = new Date('2027-04-02T00:00:00+07:00').getTime();
+    const cdDays = heroCountdown.querySelector('[data-cd="d"]');
+    const cdHours = heroCountdown.querySelector('[data-cd="h"]');
+    const cdMins = heroCountdown.querySelector('[data-cd="m"]');
+    const cdSecs = heroCountdown.querySelector('[data-cd="s"]');
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tickCountdown() {
+      const diff = Math.max(opening - Date.now(), 0);
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      cdDays.textContent = pad(days);
+      cdHours.textContent = pad(hours);
+      cdMins.textContent = pad(mins);
+      cdSecs.textContent = pad(secs);
+    }
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+  }
 
   /* ---------- Count-up stats ---------- */
   const stats = document.querySelectorAll('.stat[data-count]');
@@ -288,59 +384,27 @@
     backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 
-  /* ---------- Conference recap video: load + autoplay (muted) on scroll into view ---------- */
-  const conferenceVideo = document.getElementById('conferenceVideo');
-  if (conferenceVideo) {
-    const videoObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const src = conferenceVideo.getAttribute('data-src');
-          conferenceVideo.setAttribute('src', src + '&autoplay=1');
-          videoObserver.unobserve(conferenceVideo);
-        }
-      });
-    }, { threshold: 0.5 });
-    videoObserver.observe(conferenceVideo);
-  }
-
-  /* ---------- KV animation: chroma-key the grey-green background to transparent ---------- */
-  const kvVideo = document.getElementById('kvVideoSource');
-  const kvCanvas = document.getElementById('kvCanvas');
-  if (kvVideo && kvCanvas && kvCanvas.getContext) {
-    const ctx = kvCanvas.getContext('2d', { willReadFrequently: true });
-    const RENDER_SIZE = 640;
-    kvCanvas.width = RENDER_SIZE;
-    kvCanvas.height = RENDER_SIZE;
-
-    // Sampled from the source video's background
-    const keyR = 74, keyG = 102, keyB = 111;
-    const threshold = 34;      // fully transparent within this color distance
-    const softness = 30;       // soft falloff band beyond the threshold
-    const thresholdSq = threshold * threshold;
-    const softMaxSq = (threshold + softness) * (threshold + softness);
-
-    let rafId = null;
-    function renderFrame() {
-      if (kvVideo.readyState >= 2) {
-        ctx.drawImage(kvVideo, 0, 0, RENDER_SIZE, RENDER_SIZE);
-        const frame = ctx.getImageData(0, 0, RENDER_SIZE, RENDER_SIZE);
-        const data = frame.data;
-        for (let i = 0; i < data.length; i += 4) {
-          const dr = data[i] - keyR, dg = data[i + 1] - keyG, db = data[i + 2] - keyB;
-          const distSq = dr * dr + dg * dg + db * db;
-          if (distSq < thresholdSq) {
-            data[i + 3] = 0;
-          } else if (distSq < softMaxSq) {
-            const dist = Math.sqrt(distSq);
-            data[i + 3] = Math.round(255 * (dist - threshold) / softness);
-          }
-        }
-        ctx.putImageData(frame, 0, 0);
+  /* ---------- Showcase card videos: quick fade across the loop seam ---------- */
+  document.querySelectorAll('.showcase-video').forEach(video => {
+    const FADE = 0.35;
+    let raf = null;
+    const tick = () => {
+      if (!video.duration) {
+        raf = requestAnimationFrame(tick);
+        return;
       }
-      rafId = requestAnimationFrame(renderFrame);
-    }
-    rafId = requestAnimationFrame(renderFrame);
-  }
+      const remaining = video.duration - video.currentTime;
+      let opacity = 1;
+      if (remaining < FADE) {
+        opacity = Math.max(0, remaining / FADE);
+      } else if (video.currentTime < FADE) {
+        opacity = Math.min(1, video.currentTime / FADE);
+      }
+      video.style.opacity = String(opacity);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+  });
 
   /* ---------- FAQ accordion ---------- */
   document.querySelectorAll('.faq-item').forEach(item => {
