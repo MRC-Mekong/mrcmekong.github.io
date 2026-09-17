@@ -41,7 +41,7 @@
       const vh = window.innerHeight;
       let progress = (vh - rect.top) / (vh + rect.height);
       progress = Math.min(1, Math.max(0, progress));
-      riverImg.style.opacity = progress;
+      riverImg.style.opacity = progress * 0.5;
     }
     updateRiver();
     window.addEventListener('scroll', updateRiver, { passive: true });
@@ -54,7 +54,7 @@
   if (riverCaptionClip && riverCaption) {
     function fitCaptionSize() {
       const containerWidth = riverDivider.clientWidth;
-      const targetWidth = Math.min(containerWidth * 0.86, 1116);
+      const targetWidth = Math.min(containerWidth * 0.86, 1116) * 0.9;
       riverCaption.style.fontSize = '16px';
       const baseWidth = riverCaption.scrollWidth;
       const newSize = Math.max(16, 16 * (targetWidth / baseWidth));
@@ -383,28 +383,6 @@
   if (backToTop) {
     backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
-
-  /* ---------- Showcase card videos: quick fade across the loop seam ---------- */
-  document.querySelectorAll('.showcase-video').forEach(video => {
-    const FADE = 0.35;
-    let raf = null;
-    const tick = () => {
-      if (!video.duration) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      const remaining = video.duration - video.currentTime;
-      let opacity = 1;
-      if (remaining < FADE) {
-        opacity = Math.max(0, remaining / FADE);
-      } else if (video.currentTime < FADE) {
-        opacity = Math.min(1, video.currentTime / FADE);
-      }
-      video.style.opacity = String(opacity);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-  });
 
   /* ---------- FAQ accordion ---------- */
   document.querySelectorAll('.faq-item').forEach(item => {
