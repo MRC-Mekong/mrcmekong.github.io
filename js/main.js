@@ -142,7 +142,7 @@
   /* ---------- Scroll-spy active nav link ---------- */
   const navSections = [
     { id: 'hero', href: '#top' },
-    { id: 'programme', href: '#programme' },
+    { id: 'programme', href: '#dayProgramme' },
     { id: 'venue', href: '#venue' },
     { id: 'media', href: '#media' },
     { id: 'faq', href: '#faq' }
@@ -327,6 +327,11 @@
   const fpWrap = document.getElementById('fpWrap');
   const fpTooltip = document.getElementById('fpTooltip');
   const venuePlanImg = document.getElementById('venuePlanImg');
+  const downloadMapBtn = document.getElementById('downloadMapBtn');
+  const MAP_PDFS = {
+    1: { href: 'assets/venue-map-day1.pdf', filename: '5th-MRC-Summit-Venue-Map-Day-1.pdf' },
+    2: { href: 'assets/venue-map-day2.pdf', filename: '5th-MRC-Summit-Venue-Map-Day-2.pdf' }
+  };
   let currentVenueDay = 1;
   let activeMarkerEl = null;
 
@@ -470,6 +475,22 @@
       if (venueLive) venueLive.hidden = true;
       if (venueSoon) venueSoon.hidden = false;
     }
+    if (downloadMapBtn) {
+      const pdf = MAP_PDFS[day];
+      if (pdf) {
+        downloadMapBtn.href = pdf.href;
+        downloadMapBtn.setAttribute('download', pdf.filename);
+        downloadMapBtn.textContent = `Download Day ${day} Map (PDF)`;
+        downloadMapBtn.classList.remove('is-disabled');
+        downloadMapBtn.removeAttribute('aria-disabled');
+      } else {
+        downloadMapBtn.removeAttribute('href');
+        downloadMapBtn.removeAttribute('download');
+        downloadMapBtn.textContent = `Day ${day} Map Coming Soon`;
+        downloadMapBtn.classList.add('is-disabled');
+        downloadMapBtn.setAttribute('aria-disabled', 'true');
+      }
+    }
   }
 
   venueTabs.forEach(tab => {
@@ -486,6 +507,34 @@
     else venuePlanImg.addEventListener('load', () => { buildHotspots(); wireHotspots(); });
   }
   setVenueDay(1);
+
+  /* ---------- Badge circles: tap to reveal on touch devices ---------- */
+  document.querySelectorAll('.badge-circle').forEach(circle => {
+    circle.addEventListener('click', () => {
+      const isActive = circle.classList.contains('is-active');
+      document.querySelectorAll('.badge-circle').forEach(c => c.classList.remove('is-active'));
+      if (!isActive) circle.classList.add('is-active');
+    });
+  });
+
+  /* ---------- Venue map zoom lightbox ---------- */
+  const mapZoomBtn = document.getElementById('mapZoomBtn');
+  const mapLightbox = document.getElementById('mapLightbox');
+  const mapLightboxClose = document.getElementById('mapLightboxClose');
+  if (mapZoomBtn && mapLightbox) {
+    mapZoomBtn.addEventListener('click', () => {
+      mapLightbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+    });
+    const closeLightbox = () => {
+      mapLightbox.hidden = true;
+      document.body.style.overflow = '';
+    };
+    if (mapLightboxClose) mapLightboxClose.addEventListener('click', closeLightbox);
+    mapLightbox.addEventListener('click', e => {
+      if (e.target === mapLightbox) closeLightbox();
+    });
+  }
 
   /* ---------- Back to top ---------- */
   const backToTop = document.getElementById('backToTop');
