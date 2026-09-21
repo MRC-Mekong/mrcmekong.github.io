@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=36">
 </head>
 <body>
 
@@ -260,88 +260,12 @@
 
           <div class="venue-live" id="venueLive">
             <div class="venue-map-col">
-              <p class="venue-hint">Hover or tap a room to see what&rsquo;s on</p>
+              <p class="venue-hint">Hover or tap a marker to see what&rsquo;s on</p>
               <div class="fp-wrap" id="fpWrap">
-                <svg class="floorplan-2d" id="floorplanSvg" viewBox="0 0 900 500" role="img" aria-label="Level 1 floor plan of the QSNCC">
-                  <rect x="8" y="10" width="884" height="480" rx="12" class="fp-outline"/>
-
-                  <!-- Ballrooms (static) -->
-                  <g class="fp-static">
-                    <rect x="24" y="28" width="196" height="98" rx="6" class="fp-room-static"/>
-                    <text x="122" y="81" class="fp-label-static">Ballroom 4</text>
-                    <rect x="24" y="134" width="196" height="98" rx="6" class="fp-room-static"/>
-                    <text x="122" y="187" class="fp-label-static">Ballroom 3</text>
-                    <rect x="24" y="240" width="196" height="98" rx="6" class="fp-room-static"/>
-                    <text x="122" y="293" class="fp-label-static">Ballroom 2</text>
-                    <rect x="24" y="346" width="196" height="98" rx="6" class="fp-room-static"/>
-                    <text x="122" y="399" class="fp-label-static">Ballroom 1</text>
-                  </g>
-
-                  <!-- Plenary Hall 2: main plenary + lunch/dinner hall -->
-                  <g class="fp-room" data-room="plenary-2" tabindex="0" role="button" aria-label="Plenary Hall 2">
-                    <rect x="246" y="28" width="272" height="316" rx="8" class="fp-shape"/>
-                    <text x="382" y="176" class="fp-label">Plenary Hall 2</text>
-                    <text x="382" y="198" class="fp-sublabel">Main Plenary &middot; Lunch &amp; Dinner</text>
-                  </g>
-
-                  <!-- Exhibition Hall (static) -->
-                  <g class="fp-static">
-                    <rect x="246" y="360" width="272" height="84" rx="6" class="fp-room-static"/>
-                    <text x="382" y="398" class="fp-label-static">Exhibition Hall</text>
-                    <text x="382" y="416" class="fp-sublabel-static">40 booths &middot; country &amp; partner pavilions</text>
-                  </g>
-
-                  <!-- Plenary Hall 1 -->
-                  <g class="fp-room" data-room="plenary-1" tabindex="0" role="button" aria-label="Plenary Hall 1">
-                    <rect x="534" y="28" width="152" height="128" rx="8" class="fp-shape"/>
-                    <text x="610" y="88" class="fp-label">Plenary</text>
-                    <text x="610" y="106" class="fp-label">Hall 1</text>
-                  </g>
-
-                  <!-- Breakout Room B: 111C-110C -->
-                  <g class="fp-room" data-room="room-b" tabindex="0" role="button" aria-label="Room 111C to 110C">
-                    <rect x="534" y="172" width="72" height="150" rx="6" class="fp-shape"/>
-                    <text x="570" y="240" class="fp-label fp-label--sm">111C&ndash;110C</text>
-                  </g>
-
-                  <!-- Breakout Room C: 111B-110A -->
-                  <g class="fp-room" data-room="room-c" tabindex="0" role="button" aria-label="Room 111B to 110A">
-                    <rect x="614" y="172" width="72" height="150" rx="6" class="fp-shape"/>
-                    <text x="650" y="240" class="fp-label fp-label--sm">111B&ndash;110A</text>
-                  </g>
-
-                  <!-- Media / Organiser / Coffee Break (static) -->
-                  <g class="fp-static">
-                    <rect x="534" y="338" width="152" height="106" rx="6" class="fp-room-static"/>
-                    <text x="610" y="380" class="fp-label-static">Media &amp; Organiser</text>
-                    <text x="610" y="398" class="fp-sublabel-static">Offices &middot; Coffee Break</text>
-                  </g>
-
-                  <!-- Room 120: Side Event -->
-                  <g class="fp-room" data-room="room-120" tabindex="0" role="button" aria-label="Room 120">
-                    <rect x="702" y="28" width="170" height="86" rx="8" class="fp-shape"/>
-                    <text x="787" y="66" class="fp-label">Room 120</text>
-                    <text x="787" y="84" class="fp-sublabel">Side Event</text>
-                  </g>
-
-                  <!-- VIP / CEO suites (static) -->
-                  <g class="fp-static">
-                    <rect x="702" y="126" width="170" height="76" rx="6" class="fp-room-static"/>
-                    <text x="787" y="168" class="fp-label-static">VIP &amp; CEO Suites</text>
-                  </g>
-
-                  <!-- Delegation lounges (static) -->
-                  <g class="fp-static">
-                    <rect x="702" y="214" width="170" height="230" rx="6" class="fp-room-static"/>
-                    <text x="787" y="320" class="fp-label-static">Delegation Lounges</text>
-                    <text x="787" y="338" class="fp-sublabel-static">LNMCs &middot; VNMCs</text>
-                    <text x="787" y="354" class="fp-sublabel-static">CNMCs &middot; TNMCs</text>
-                  </g>
-                </svg>
-
+                <img src="assets/venue-plan.png" alt="Isometric venue floor plan with numbered session markers" class="venue-plan-img" id="venuePlanImg">
                 <div class="fp-tooltip" id="fpTooltip" hidden></div>
               </div>
-              <p class="venue-fineprint">Flat layout based on the venue&rsquo;s Level&nbsp;1 floor plan &mdash; not to scale. Room assignments subject to confirmation.</p>
+              <p class="venue-fineprint">Indicative isometric layout &middot; not to scale. Room assignments subject to confirmation.</p>
             </div>
 
             <div class="venue-programme-col">
@@ -357,7 +281,61 @@
 
         </div>
 
-        <a href="#faq" class="btn btn-outline">Download Full Floor Plan (PDF)</a>
+        <a href="#faq" class="btn btn-outline">Download Map (PDF)</a>
+      </div>
+
+      <div class="venue-panel exhibition-panel" data-reveal>
+        <h3 class="exhibition-heading">Exhibition Hall</h3>
+
+        <div class="venue-stage">
+          <div class="exhibition-layout">
+
+            <div class="exhibition-booths" aria-label="Exhibition booths, 40 total">
+              <span class="booth-chip"><span class="booth-no">1</span></span>
+              <span class="booth-chip"><span class="booth-no">2</span></span>
+              <span class="booth-chip"><span class="booth-no">3</span></span>
+              <span class="booth-chip"><span class="booth-no">4</span></span>
+              <span class="booth-chip"><span class="booth-no">5</span></span>
+              <span class="booth-chip"><span class="booth-no">6</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">7</span><span class="booth-name">Sweden</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">8</span><span class="booth-name">Japan</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">9</span><span class="booth-name">Australia</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">10</span><span class="booth-name">MRC</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">11</span><span class="booth-name">MRC</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">12</span><span class="booth-name">Switzerland</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">13</span><span class="booth-name">Germany</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">14</span><span class="booth-name">UK</span></span>
+              <span class="booth-chip"><span class="booth-no">15</span></span>
+              <span class="booth-chip"><span class="booth-no">16</span></span>
+              <span class="booth-chip"><span class="booth-no">17</span></span>
+              <span class="booth-chip"><span class="booth-no">18</span></span>
+              <span class="booth-chip"><span class="booth-no">19</span></span>
+              <span class="booth-chip"><span class="booth-no">20</span></span>
+              <span class="booth-chip"><span class="booth-no">21</span></span>
+              <span class="booth-chip"><span class="booth-no">22</span></span>
+              <span class="booth-chip"><span class="booth-no">23</span></span>
+              <span class="booth-chip"><span class="booth-no">24</span></span>
+              <span class="booth-chip"><span class="booth-no">25</span></span>
+              <span class="booth-chip"><span class="booth-no">26</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">27</span><span class="booth-name">Canada</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">28</span><span class="booth-name">France</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">29</span><span class="booth-name">Korea</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">30</span><span class="booth-name">TNMC</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">31</span><span class="booth-name">TNMC</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">32</span><span class="booth-name">New Zealand</span></span>
+              <span class="booth-chip is-assigned"><span class="booth-no">33</span><span class="booth-name">United States</span></span>
+              <span class="booth-chip"><span class="booth-no">34</span></span>
+              <span class="booth-chip"><span class="booth-no">35</span></span>
+              <span class="booth-chip"><span class="booth-no">36</span></span>
+              <span class="booth-chip"><span class="booth-no">37</span></span>
+              <span class="booth-chip"><span class="booth-no">38</span></span>
+              <span class="booth-chip"><span class="booth-no">39</span></span>
+              <span class="booth-chip"><span class="booth-no">40</span></span>
+            </div>
+          </div>
+
+          <p class="venue-fineprint">Exhibition Hall &middot; Plenary Hall 4 &middot; 40 booths total. Booth assignments subject to confirmation.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -474,34 +452,40 @@
       </div>
     </div>
 
-    <div class="wrap partners-block">
-      <div class="globe-wrap" data-reveal>
-        <svg class="globe" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="70" class="globe-outline"/>
-          <ellipse cx="100" cy="100" rx="70" ry="24" class="globe-meridian m1"/>
-          <ellipse cx="100" cy="100" rx="70" ry="24" class="globe-meridian m2"/>
-          <ellipse cx="100" cy="100" rx="70" ry="24" class="globe-meridian m3"/>
-          <line x1="30" y1="100" x2="170" y2="100" class="globe-equator"/>
-        </svg>
-        <p>MCs, Development Partners &amp; Summit Partners</p>
+    <div class="wrap partners-static" data-reveal>
+      <p class="partners-heading">Organised By</p>
+      <div class="partners-divider"></div>
+      <div class="partners-orgrow">
+        <img src="assets/mrc-roundel.png" alt="Mekong River Commission" class="partners-org-logo">
       </div>
 
-      <div class="logo-marquee" aria-label="Partner organisations">
-        <div class="logo-track">
-          <span class="logo-chip">Partner One</span>
-          <span class="logo-chip">Partner Two</span>
-          <span class="logo-chip">Development Partner</span>
-          <span class="logo-chip">Partner Three</span>
-          <span class="logo-chip">Country Partner</span>
-          <span class="logo-chip">Partner Four</span>
-          <!-- duplicate for seamless loop -->
-          <span class="logo-chip" aria-hidden="true">Partner One</span>
-          <span class="logo-chip" aria-hidden="true">Partner Two</span>
-          <span class="logo-chip" aria-hidden="true">Development Partner</span>
-          <span class="logo-chip" aria-hidden="true">Partner Three</span>
-          <span class="logo-chip" aria-hidden="true">Country Partner</span>
-          <span class="logo-chip" aria-hidden="true">Partner Four</span>
-        </div>
+      <p class="partners-heading">The MRC Member Countries</p>
+      <div class="partners-divider"></div>
+      <div class="flag-row">
+        <span class="flag-chip"><img src="assets/flags/cambodia.svg" alt="Cambodia" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/laos.svg" alt="Lao PDR" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/thailand.svg" alt="Thailand" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/vietnam.svg" alt="Viet Nam" loading="lazy"></span>
+      </div>
+
+      <p class="partners-heading">Development Partners</p>
+      <div class="partners-divider"></div>
+      <div class="flag-row flag-row--wrap">
+        <span class="flag-chip"><img src="assets/flags/australia.png" alt="Australia" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/belgium.png" alt="Belgium" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/canada.png" alt="Canada" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/eu.png" alt="European Union" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/france.png" alt="France" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/germany.png" alt="Germany" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/japan.png" alt="Japan" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/netherlands.png" alt="Netherlands" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/new-zealand.png" alt="New Zealand" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/luxembourg.png" alt="Luxembourg" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/south-korea.png" alt="Republic of Korea" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/switzerland.png" alt="Switzerland" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/sweden.png" alt="Sweden" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/uk.png" alt="United Kingdom" loading="lazy"></span>
+        <span class="flag-chip"><img src="assets/flags/us.png" alt="United States" loading="lazy"></span>
       </div>
     </div>
   </section>
@@ -517,24 +501,35 @@
 
       <div class="faq-list" data-reveal style="--i:2">
         <div class="faq-item is-open">
-          <button class="faq-q">Who can attend the 5th MRC Summit?<span class="faq-toggle">+</span></button>
-          <div class="faq-a"><p>The Summit welcomes government delegations, development partners, private sector representatives, researchers, civil society and accredited media. The International Conference and exhibitions are open to a wider range of participants.</p></div>
+          <button class="faq-q">What is the MRC Summit, and why is it important?<span class="faq-toggle">+</span></button>
+          <div class="faq-a"><p>The MRC Summit is the highest-level political forum of the Mekong River Commission, held every four years. It brings together the Prime Ministers/Heads of Government from the four MRC Member Countries&mdash;Cambodia, Lao PDR, Thailand, and Viet Nam&mdash;alongside Dialogue Partners (China and Myanmar), international partners, and regional stakeholders to review progress in regional cooperation and set strategic directions for the Mekong River Basin.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">When does registration open?<span class="faq-toggle">+</span></button>
-          <div class="faq-a"><p>Registration categories and rates will be announced ahead of the event. Check back on this page or contact the Summit Secretariat via the details in the footer to be notified as soon as it opens.</p></div>
+          <button class="faq-q">What are the main components of the Summit program?<span class="faq-toggle">+</span></button>
+          <div class="faq-a">
+            <p>The event features three primary tracks:</p>
+            <ol class="faq-a-list">
+              <li><strong>The MRC International Conference:</strong> A two-day forum featuring research presentations, policy panels, and expert discussions on climate adaptation, river basin management, and innovation.</li>
+              <li><strong>The High-Level Ministerial &amp; Summit Sessions:</strong> Plenary meetings reserved for government leaders, ministers, and official delegations leading to the adoption of the Summit Declaration.</li>
+              <li><strong>Exhibitions &amp; Side Events:</strong> Including the Mekong Youth Innovation Showcase and Community Knowledge Marketplace.</li>
+            </ol>
+          </div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">Where is the Summit taking place?<span class="faq-toggle">+</span></button>
-          <div class="faq-a"><p>The 5th MRC Summit will be held from 2&ndash;5 April 2027 in Bangkok, Thailand. Full venue details are available in the Venue Map section.</p></div>
+          <button class="faq-q">Where is the venue, and how do I get there?<span class="faq-toggle">+</span></button>
+          <div class="faq-a"><p>The Summit will take place at the Queen Sirikit National Convention Center (QSNCC) in Bangkok, Thailand. QSNCC is accessible via the MRT (Bangkok Metro) directly at the QSNCC Station (Exit 3), as well as by taxi or ride-hailing services.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">Will there be opportunities for young innovators?<span class="faq-toggle">+</span></button>
-          <div class="faq-a"><p>Yes &mdash; the Mekong Youth Innovation Showcase and Community Knowledge Marketplace, part of the MRC International Conference, are dedicated spaces for young innovators, citizen scientists and riverpreneurs.</p></div>
+          <button class="faq-q">How do media representatives apply for press accreditation?<span class="faq-toggle">+</span></button>
+          <div class="faq-a"><p>Journalists, photographers, and broadcast crews must submit a Media Accreditation Request via the online registration portal. You will be required to upload a valid press card and a formal letter of assignment from your media outlet.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">How can my organisation exhibit or partner with the Summit?<span class="faq-toggle">+</span></button>
-          <div class="faq-a"><p>Exhibition and partnership packages will be published closer to the Summit. Contact the Secretariat via the details in the footer to register early interest.</p></div>
+          <button class="faq-q">Will there be a dedicated press facility at the venue?<span class="faq-toggle">+</span></button>
+          <div class="faq-a"><p>Yes, a fully equipped Media Center will be provided, featuring high-speed internet, workstation desks, press conference rooms, and live broadcast feeds of key sessions.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Who do I contact for additional inquiries?<span class="faq-toggle">+</span></button>
+          <div class="faq-a"><p>For further assistance, please contact <a href="mailto:mrcs@mrcmekong.org">mrcs@mrcmekong.org</a>.</p></div>
         </div>
       </div>
     </div>
@@ -595,6 +590,6 @@
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 
-<script src="js/main.js?v=15"></script>
+<script src="js/main.js?v=16"></script>
 </body>
 </html>

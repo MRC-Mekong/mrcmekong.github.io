@@ -214,61 +214,107 @@
   }, { threshold: 0.5 });
   stats.forEach(el => statsObserver.observe(el));
 
-  /* ---------- Venue Map: floor plan + programme by room ---------- */
-  const ROOM_META = [
-    { id: 'plenary-2', label: 'Plenary Hall 2' },
-    { id: 'plenary-1', label: 'Plenary Hall 1' },
-    { id: 'room-b', label: 'Room 111C–110C' },
-    { id: 'room-c', label: 'Room 111B–110A' },
-    { id: 'room-120', label: 'Room 120 — Side Event' }
+  /* ---------- Venue Map: isometric plan + programme by room ---------- */
+  const MARKERS = [
+    { no: 1,  x: 90.93, y: 41.82 },
+    { no: 2,  x: 79.63, y: 53.91 },
+    { no: 3,  x: 60.48, y: 65.57 },
+    { no: 4,  x: 63.48, y: 69.37 },
+    { no: 5,  x: 72.95, y: 71.05 },
+    { no: 6,  x: 70.92, y: 73.04 },
+    { no: 7,  x: 69.06, y: 75.10 },
+    { no: 8,  x: 67.00, y: 77.34 },
+    { no: 9,  x: 62.65, y: 81.58 },
+    { no: 10, x: 60.32, y: 83.95 },
+    { no: 11, x: 58.49, y: 85.76 },
+    { no: 12, x: 56.40, y: 88.32 },
+    { no: 13, x: 54.37, y: 84.39 },
+    { no: 14, x: 36.16, y: 79.71 },
+    { no: 15, x: 33.57, y: 76.85 },
+    { no: 16, x: 31.01, y: 67.81 },
+    { no: 17, x: 24.93, y: 74.29 }
   ];
+
+  const EXIT = [[64.66,5.9],[38.98,7.0],[75.53,17.0],[22.6,19.3],[85.7,28.1],[7.13,37.7],[96.8,39.7],[77.35,40.3],[16.95,51.0],[65.52,52.1],[79.17,57.6],[23.42,58.6],[53.87,63.8],[34.21,69.7],[41.83,76.3],[64.53,76.3],[52.38,90.8]];
+  const WC = [[27.34,17.2],[19.15,52.0],[19.7,56.5],[68.52,56.7],[54.81,70.8]];
+  const LIFT = [[14.91,49.3],[78.31,59.9],[51.79,87.3]];
+  const ESC = [[7.4,48.3]];
+
+  const FACILITIES = [].concat(
+    EXIT.map((p, i) => ({ id: 'ex' + i, x: p[0], y: p[1], badge: 'EX', title: 'Emergency Exit', room: 'Egress route · keep clear', cap: '17 exits on this level' })),
+    WC.map((p, i) => ({ id: 'wc' + i, x: p[0], y: p[1], badge: 'WC', title: 'Restrooms', room: 'Male · Female · Accessible', cap: '5 locations on this level' })),
+    LIFT.map((p, i) => ({ id: 'el' + i, x: p[0], y: p[1], badge: 'EL', title: 'Elevator', room: 'Passenger lift · all levels', cap: '3 cars on this level' })),
+    ESC.map((p, i) => ({ id: 'es' + i, x: p[0], y: p[1], badge: 'ES', title: 'Escalator', room: 'Main entrance lobby', cap: 'Up · down' }))
+  );
 
   const VENUE_DAYS = {
     1: {
-      rooms: {
-        'plenary-2': [
-          { time: '09:00', title: 'Welcome Session', people: ['Chairperson, Thai National Mekong Committee (TBC)', 'Mr Chadchart Sittipunt, Governor of Bangkok', 'Ms Busadee Santipitaks, CEO, MRC Secretariat'] },
-          { time: '09:25', title: 'Conference Objective and Structure', people: ['Ms Khemupsorn Sirisukha, Master of Ceremony'] },
-          { time: '09:30', title: 'Opening Sessions: Mekong Developments, Challenges and Opportunities', people: ['Keynote 1: Prof. Taikan Oki, University of Tokyo & 2024 Stockholm Water Prize Laureate', 'Keynote 2: Niklas Ruf & Jana Spiller, Stockholm Junior Water Prize 2025', 'Keynote 3: Ms Retno Marsudi, UN Secretary-General’s Special Envoy on Water', 'Keynote 4: Ms Busadee Santipitaks, CEO, MRC Secretariat'] },
-          { time: '10:50', title: 'Summary of Keynotes', people: ['Ms Khemupsorn Sirisukha'] },
-          { time: '11:00', title: 'Visit to Conference Exhibition', people: [] }
-        ],
-        'plenary-1': [
-          { time: '13:30', title: 'Session 1A — “Advancing Water Flow and Hydropower Coordination”', people: ['Facilitator: Australia/DFAT', 'Rapporteurs: MRCS staff'] },
-          { time: '15:30', title: 'Session 1D — “Youth-led Riverpreneur Business Idea Challenge”', people: ['Facilitator: MRCS', 'Rapporteurs: MRCS staff'] }
-        ],
-        'room-b': [
-          { time: '13:30', title: 'Session 1B — “Enhancing Data, Monitoring, and Modelling Capabilities for Decision Support”', people: ['Facilitator: USACE', 'Rapporteurs: MRCS staff'] },
-          { time: '15:30', title: 'Session 1E — “Advancing Community Innovations for River Livelihoods”', people: ['Facilitator: WWF', 'Rapporteurs: MRCS staff'] }
-        ],
-        'room-c': [
-          { time: '13:30', title: 'Session 1C — “Empowering Communities through Citizen Science”', people: ['Facilitator: SEI', 'Rapporteurs: MRCS staff'] },
-          { time: '15:30', title: 'Session 1F — “In Conversation: The Water Leaders’ Table”', people: ['Facilitator: GIZ', 'Rapporteurs: MRCS staff', 'With leaders from MRC, NBI, OVMS, CWRC and NDBA'] }
-        ],
-        'room-120': [
-          { time: '12:00', title: 'Side Event', people: ['Programme to be confirmed'] }
-        ]
+      markers: {
+        1: { title: 'Lunch & Dinner', room: 'Plenary Hall 3', cap: '', rows: [] },
+        2: { title: 'Plenary Session', room: 'Plenary Hall 2 / Plenary Hall 1', cap: '200 participants', rows: [
+          { t: '09:00', s: 'Welcome Session' },
+          { t: '09:25', s: 'Conference Objective and Structure' },
+          { t: '09:30', s: 'Opening Sessions: Mekong Developments, Challenges, and Opportunities' },
+          { t: '10:50', s: 'Summary of Keynotes' },
+          { t: '11:00', s: 'Visit to Conference Exhibition' },
+          { t: '13:30', s: '1A: “Advancing Water Flow and Hydropower Coordination”' },
+          { t: '15:30', s: '1D: Youth-led Riverpreneur Business Idea Challenge' }
+        ] },
+        3: { title: '1B – 1E', room: 'Room 111C – 110C', cap: '200 participants', rows: [
+          { t: '13:30', s: '1B: “Enhancing Data, Monitoring, and Modelling Capabilities for Decision Support”' },
+          { t: '15:30', s: '1E: “Advancing Community Innovations for River Livelihoods”' }
+        ] },
+        4: { title: '1C – 1F', room: 'Room 111B – 110A', cap: '200 participants', rows: [
+          { t: '13:30', s: '1C: “Empowering Communities through Citizen Science”' },
+          { t: '15:30', s: '1F: In Conversation – The Water Leaders’ Table' }
+        ] },
+        5: { title: 'Side Event', room: 'Room 120', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed' }] },
+        6: { title: 'Private Room', room: '', cap: '', rows: [] },
+        7: { title: 'Private Room', room: '', cap: '', rows: [] },
+        8: { title: 'Side Event', room: 'Room 117', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed · TNMCs' }] },
+        9: { title: 'Delegates Room', room: 'Room 116 · TNMCs', cap: '100 participants', rows: [] },
+        10: { title: 'Delegates Room', room: 'Room 115 · CNMCs', cap: '100 participants', rows: [] },
+        11: { title: 'Delegates Room', room: 'Room 114 · VNMCs', cap: '100 participants', rows: [] },
+        12: { title: 'Delegates Room', room: 'Room 112 · LNMCs', cap: '100 participants', rows: [] },
+        13: { title: 'Coffee Break Area 1', room: 'Room C102', cap: '100 participants', rows: [] },
+        14: { title: 'Organiser Room', room: 'Room 107A-B · MRCs', cap: '100 participants', rows: [] },
+        15: { title: 'Organiser Room', room: 'Room 106 · TNMCs', cap: '100 participants', rows: [] },
+        16: { title: 'Media Room', room: 'Room 105', cap: '100 participants', rows: [] },
+        17: { title: 'Coffee Break Area 2', room: 'Room C101', cap: '100 participants', rows: [] }
       }
     },
     2: {
-      rooms: {
-        'plenary-2': [
-          { time: '09:00', title: 'Summary of Day One and Opening of Day Two', people: ['Facilitator: Ms Khemupsorn Sirisukha'] },
-          { time: '11:00', title: 'Plenary: Reflections on the International Conference and Ways Forward', people: ['Facilitator: Ms Khemupsorn Sirisukha', 'Speakers: Development Partners, Youth, Community & Partner Organization Representatives'] },
-          { time: '12:00', title: 'Conference Key Messages and Closing Session', people: ['Ms Busadee Santipitaks, CEO, MRC Secretariat', 'Closing remarks: Joint Committee Chair'] }
-        ],
-        'plenary-1': [
-          { time: '09:15', title: 'Session 2A — “Digital Twin Technology for Transboundary River Management”', people: ['Facilitator: UNOSSC (STEPI, K-Water)', 'Rapporteurs: MRCS staff'] }
-        ],
-        'room-b': [
-          { time: '09:15', title: 'Session 2B — “Smart Agriculture, Aquaculture, and Water Quality”', people: ['Facilitator: MAFF/JICA', 'Rapporteurs: MRCS staff'] }
-        ],
-        'room-c': [
-          { time: '13:00', title: 'Session 2C', people: ['Programme to be confirmed'] }
-        ],
-        'room-120': [
-          { time: '12:00', title: 'Side Event', people: ['Mekong Youth Innovation Showcase Exhibition', 'Community Knowledge Marketplace', 'Sister River Dialogue with other basin organisations'] }
-        ]
+      markers: {
+        1: { title: 'Lunch & Dinner', room: 'Plenary Hall 3', cap: '', rows: [] },
+        2: { title: 'Plenary Session', room: 'Plenary Hall 2 / Plenary Hall 1', cap: '200 participants', rows: [
+          { t: '09:00', s: 'Summary of Day One and Opening of Day Two' },
+          { t: '09:15', s: '2A: Digital Twin Technology for Transboundary River Management · Plenary Hall 1' },
+          { t: '11:00', s: 'Reflections on the International Conference and Ways Forward' },
+          { t: '12:00', s: 'Conference Key Messages and Closing Session' }
+        ] },
+        3: { title: '2B', room: 'Room 111C – 110C', cap: '200 participants', rows: [
+          { t: '09:15', s: '2B: Smart Agriculture, Aquaculture, and Water Quality' }
+        ] },
+        4: { title: '2C', room: 'Room 111B – 110A', cap: '200 participants', rows: [
+          { t: '13:00', s: 'Programme to be confirmed' }
+        ] },
+        5: { title: 'Side Event', room: 'Room 120', cap: '100 participants', rows: [
+          { t: '12:00', s: 'Mekong Youth Innovation Showcase Exhibition' },
+          { t: '', s: 'Community Knowledge Marketplace featuring tools, local products, and resilience stories' },
+          { t: '', s: 'Sister River Dialogue with other basin organisations' }
+        ] },
+        6: { title: 'Private Room', room: '', cap: '', rows: [] },
+        7: { title: 'Private Room', room: '', cap: '', rows: [] },
+        8: { title: 'Side Event', room: 'Room 117 · TNMCs', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed' }] },
+        9: { title: 'Delegates Room', room: 'Room 116 · TNMCs', cap: '100 participants', rows: [] },
+        10: { title: 'Delegates Room', room: 'Room 115 · CNMCs', cap: '100 participants', rows: [] },
+        11: { title: 'Delegates Room', room: 'Room 114 · VNMCs', cap: '100 participants', rows: [] },
+        12: { title: 'Delegates Room', room: 'Room 112 · LNMCs', cap: '100 participants', rows: [] },
+        13: { title: 'Coffee Break Area 1', room: 'Room C102', cap: '100 participants', rows: [] },
+        14: { title: 'Organiser Room', room: 'Room 107A-B · MRCs', cap: '100 participants', rows: [] },
+        15: { title: 'Organiser Room', room: 'Room 106 · TNMCs', cap: '100 participants', rows: [] },
+        16: { title: 'Media Room', room: 'Room 105', cap: '100 participants', rows: [] },
+        17: { title: 'Coffee Break Area 2', room: 'Room C101', cap: '100 participants', rows: [] }
       }
     }
   };
@@ -280,16 +326,17 @@
   const venueRoomList = document.getElementById('venueRoomList');
   const fpWrap = document.getElementById('fpWrap');
   const fpTooltip = document.getElementById('fpTooltip');
+  const venuePlanImg = document.getElementById('venuePlanImg');
   let currentVenueDay = 1;
+  let activeMarkerEl = null;
 
-  function sessionsHtml(sessions) {
-    if (!sessions || !sessions.length) return '<p class="fp-empty">No sessions scheduled.</p>';
-    return sessions.map(s => `
+  function sessionsHtml(rows) {
+    if (!rows || !rows.length) return '<p class="fp-empty">No sessions scheduled.</p>';
+    return rows.map(r => `
       <div class="venue-session">
-        <span class="venue-session-time">${s.time}</span>
+        <span class="venue-session-time">${r.t || ''}</span>
         <div class="venue-session-body">
-          <p class="venue-session-title">${s.title}</p>
-          ${s.people.length ? `<ul class="venue-session-people">${s.people.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
+          <p class="venue-session-title">${r.s}</p>
         </div>
       </div>`).join('');
   }
@@ -297,61 +344,119 @@
   function renderRoomList(day) {
     const data = VENUE_DAYS[day];
     if (!venueRoomList || !data) return;
-    venueRoomList.innerHTML = ROOM_META.map(room => {
-      const sessions = data.rooms[room.id];
-      if (!sessions) return '';
+    venueRoomList.innerHTML = MARKERS.map(m => {
+      const info = data.markers[m.no];
+      if (!info || !info.rows.length) return '';
       return `
-        <div class="venue-room-group" data-room-group="${room.id}">
-          <h4>${room.label}</h4>
-          ${sessionsHtml(sessions)}
+        <div class="venue-room-group" data-room-group="m${m.no}">
+          <h4>${info.room || info.title}</h4>
+          ${sessionsHtml(info.rows)}
         </div>`;
     }).join('');
   }
 
-  function showTooltip(roomEl) {
-    const day = VENUE_DAYS[currentVenueDay];
-    if (!day || !fpTooltip || !fpWrap) return;
-    const roomId = roomEl.getAttribute('data-room');
-    const sessions = day.rooms[roomId];
-    if (!sessions) return;
-    const meta = ROOM_META.find(r => r.id === roomId);
+  function buildHotspots() {
+    if (!fpWrap) return;
+    fpWrap.querySelectorAll('.fp-marker, .fp-facility').forEach(el => el.remove());
+    MARKERS.forEach(m => {
+      const el = document.createElement('div');
+      el.className = 'fp-marker';
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('data-marker', m.no);
+      el.setAttribute('aria-label', 'Marker ' + m.no);
+      el.style.left = m.x + '%';
+      el.style.top = m.y + '%';
+      el.style.width = '3.6%';
+      el.style.aspectRatio = '1/1';
+      el.style.transform = 'translate(-50%,-50%)';
+      fpWrap.insertBefore(el, fpTooltip);
+    });
+    FACILITIES.forEach(f => {
+      const el = document.createElement('div');
+      el.className = 'fp-facility';
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('data-facility', f.id);
+      el.setAttribute('aria-label', f.title);
+      el.style.left = f.x + '%';
+      el.style.top = f.y + '%';
+      el.style.width = '3%';
+      el.style.aspectRatio = '1/1';
+      el.style.transform = 'translate(-50%,-50%)';
+      fpWrap.insertBefore(el, fpTooltip);
+    });
+  }
 
-    fpTooltip.innerHTML = `<h5>${meta ? meta.label : ''}</h5>${sessionsHtml(sessions)}`;
+  function showTooltip(target, info, badge) {
+    if (!fpTooltip || !fpWrap) return;
+    activeMarkerEl = target;
+    const rowsHtml = info.hasRows ? `
+      <div class="fp-tooltip-rows">${sessionsHtml(info.rows)}</div>` : '';
+    fpTooltip.innerHTML = `
+      <div class="fp-tooltip-head">
+        <span class="fp-tooltip-badge">${badge}</span>
+        <h5>${info.title}</h5>
+      </div>
+      <p class="fp-tooltip-room">${info.room || 'No room assigned'}</p>
+      ${info.cap ? `<p class="fp-tooltip-cap">${info.cap}</p>` : ''}
+      ${rowsHtml}`;
     fpTooltip.hidden = false;
 
     const wrapRect = fpWrap.getBoundingClientRect();
-    const roomRect = roomEl.getBoundingClientRect();
-    let left = roomRect.left - wrapRect.left + roomRect.width / 2;
-    let top = roomRect.top - wrapRect.top + roomRect.height + 10;
+    const targetRect = target.getBoundingClientRect();
+    let left = targetRect.left - wrapRect.left + targetRect.width / 2;
+    let top = targetRect.top - wrapRect.top + targetRect.height + 10;
 
     fpTooltip.style.left = '0px';
     fpTooltip.style.top = '0px';
     const tipRect = fpTooltip.getBoundingClientRect();
     left = Math.max(8, Math.min(left - tipRect.width / 2, wrapRect.width - tipRect.width - 8));
     if (top + tipRect.height > wrapRect.height) {
-      top = roomRect.top - wrapRect.top - tipRect.height - 10;
+      top = targetRect.top - wrapRect.top - tipRect.height - 10;
     }
     fpTooltip.style.left = left + 'px';
     fpTooltip.style.top = top + 'px';
 
     document.querySelectorAll('.venue-room-group').forEach(g => {
-      g.classList.toggle('is-highlighted', g.getAttribute('data-room-group') === roomId);
+      g.classList.toggle('is-highlighted', g.getAttribute('data-room-group') === ('m' + target.getAttribute('data-marker')));
     });
   }
 
   function hideTooltip() {
     if (!fpTooltip) return;
     fpTooltip.hidden = true;
+    activeMarkerEl = null;
     document.querySelectorAll('.venue-room-group').forEach(g => g.classList.remove('is-highlighted'));
   }
 
-  document.querySelectorAll('.fp-room').forEach(room => {
-    room.addEventListener('mouseenter', () => showTooltip(room));
-    room.addEventListener('mouseleave', hideTooltip);
-    room.addEventListener('focus', () => showTooltip(room));
-    room.addEventListener('blur', hideTooltip);
-    room.addEventListener('click', () => showTooltip(room));
-  });
+  function wireHotspots() {
+    if (!fpWrap) return;
+    fpWrap.querySelectorAll('.fp-marker').forEach(el => {
+      const no = parseInt(el.getAttribute('data-marker'), 10);
+      const open = () => {
+        const day = VENUE_DAYS[currentVenueDay];
+        const info = day && day.markers[no];
+        if (!info) return;
+        showTooltip(el, Object.assign({}, info, { hasRows: info.rows.length > 0 }), String(no).padStart(2, '0'));
+      };
+      el.addEventListener('mouseenter', open);
+      el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('focus', open);
+      el.addEventListener('blur', hideTooltip);
+      el.addEventListener('click', open);
+    });
+    fpWrap.querySelectorAll('.fp-facility').forEach(el => {
+      const facility = FACILITIES.find(f => f.id === el.getAttribute('data-facility'));
+      if (!facility) return;
+      const open = () => showTooltip(el, Object.assign({}, facility, { hasRows: false }), facility.badge);
+      el.addEventListener('mouseenter', open);
+      el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('focus', open);
+      el.addEventListener('blur', hideTooltip);
+      el.addEventListener('click', open);
+    });
+  }
 
   function setVenueDay(day) {
     currentVenueDay = day;
@@ -376,6 +481,10 @@
     });
   });
 
+  if (venuePlanImg) {
+    if (venuePlanImg.complete) { buildHotspots(); wireHotspots(); }
+    else venuePlanImg.addEventListener('load', () => { buildHotspots(); wireHotspots(); });
+  }
   setVenueDay(1);
 
   /* ---------- Back to top ---------- */
