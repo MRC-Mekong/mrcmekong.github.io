@@ -197,6 +197,8 @@ em{font-style:normal;font-weight:800;color:var(--gold-500);}
 .hero-title-static{display:block;font-size:clamp(1.6rem,4.2vw,3.2rem);white-space:nowrap;}
 .hero-title .word-cycle{display:grid;justify-content:center;text-align:center;margin-top:8px;}
 .hero-title .word-cycle-item{font-size:clamp(2.4rem,6.2vw,4.8rem);color:var(--gold-300);}
+.hero-title .word-cycle-item--yellow{color:var(--brand-yellow);}
+.hero-title .word-cycle-item--green{color:var(--brand-green);}
 
 .word-cycle{position:relative;display:inline-grid;vertical-align:bottom;text-align:left;}
 .word-cycle-item{
@@ -206,6 +208,8 @@ em{font-style:normal;font-weight:800;color:var(--gold-500);}
 }
 .word-cycle-item:nth-child(2){animation-delay:3s;}
 .word-cycle-item:nth-child(3){animation-delay:6s;}
+.word-cycle-item--yellow{color:var(--brand-yellow);}
+.word-cycle-item--green{color:var(--brand-green);}
 @keyframes wordCycle{
   0%{opacity:0;transform:translateY(6px);}
   6%{opacity:1;transform:translateY(0);}
