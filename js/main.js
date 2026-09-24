@@ -235,17 +235,10 @@
     { no: 17, x: 24.93, y: 74.29 }
   ];
 
-  const EXIT = [[64.66,5.9],[38.98,7.0],[75.53,17.0],[22.6,19.3],[85.7,28.1],[7.13,37.7],[96.8,39.7],[77.35,40.3],[16.95,51.0],[65.52,52.1],[79.17,57.6],[23.42,58.6],[53.87,63.8],[34.21,69.7],[41.83,76.3],[64.53,76.3],[52.38,90.8]];
-  const WC = [[27.34,17.2],[19.15,52.0],[19.7,56.5],[68.52,56.7],[54.81,70.8]];
-  const LIFT = [[14.91,49.3],[78.31,59.9],[51.79,87.3]];
-  const ESC = [[7.4,48.3]];
-
-  const FACILITIES = [].concat(
-    EXIT.map((p, i) => ({ id: 'ex' + i, x: p[0], y: p[1], badge: 'EX', title: 'Emergency Exit', room: 'Egress route · keep clear', cap: '17 exits on this level' })),
-    WC.map((p, i) => ({ id: 'wc' + i, x: p[0], y: p[1], badge: 'WC', title: 'Restrooms', room: 'Male · Female · Accessible', cap: '5 locations on this level' })),
-    LIFT.map((p, i) => ({ id: 'el' + i, x: p[0], y: p[1], badge: 'EL', title: 'Elevator', room: 'Passenger lift · all levels', cap: '3 cars on this level' })),
-    ESC.map((p, i) => ({ id: 'es' + i, x: p[0], y: p[1], badge: 'ES', title: 'Escalator', room: 'Main entrance lobby', cap: 'Up · down' }))
-  );
+  const MAP_IMAGES = {
+    1: { src: 'assets/floorplans/day1.html', title: 'Day 1 venue floor plan' },
+    2: { src: 'assets/floorplans/day2.html', title: 'Day 2 venue floor plan' }
+  };
 
   const VENUE_DAYS = {
     1: {
@@ -324,16 +317,14 @@
   const venueSoon = document.getElementById('venueSoon');
   const venueDayHeading = document.getElementById('venueDayHeading');
   const venueRoomList = document.getElementById('venueRoomList');
-  const fpWrap = document.getElementById('fpWrap');
-  const fpTooltip = document.getElementById('fpTooltip');
-  const venuePlanImg = document.getElementById('venuePlanImg');
+  const venueFloorplanFrame = document.getElementById('venueFloorplanFrame');
+  const mapLightboxFrame = document.getElementById('mapLightboxFrame');
   const downloadMapBtn = document.getElementById('downloadMapBtn');
   const MAP_PDFS = {
     1: { href: 'assets/venue-map-day1.pdf', filename: '5th-MRC-Summit-Venue-Map-Day-1.pdf' },
     2: { href: 'assets/venue-map-day2.pdf', filename: '5th-MRC-Summit-Venue-Map-Day-2.pdf' }
   };
   let currentVenueDay = 1;
-  let activeMarkerEl = null;
 
   function sessionsHtml(rows) {
     if (!rows || !rows.length) return '<p class="fp-empty">No sessions scheduled.</p>';
@@ -360,112 +351,19 @@
     }).join('');
   }
 
-  function buildHotspots() {
-    if (!fpWrap) return;
-    fpWrap.querySelectorAll('.fp-marker, .fp-facility').forEach(el => el.remove());
-    MARKERS.forEach(m => {
-      const el = document.createElement('div');
-      el.className = 'fp-marker';
-      el.tabIndex = 0;
-      el.setAttribute('role', 'button');
-      el.setAttribute('data-marker', m.no);
-      el.setAttribute('aria-label', 'Marker ' + m.no);
-      el.style.left = m.x + '%';
-      el.style.top = m.y + '%';
-      el.style.width = '3.6%';
-      el.style.aspectRatio = '1/1';
-      el.style.transform = 'translate(-50%,-50%)';
-      fpWrap.insertBefore(el, fpTooltip);
-    });
-    FACILITIES.forEach(f => {
-      const el = document.createElement('div');
-      el.className = 'fp-facility';
-      el.tabIndex = 0;
-      el.setAttribute('role', 'button');
-      el.setAttribute('data-facility', f.id);
-      el.setAttribute('aria-label', f.title);
-      el.style.left = f.x + '%';
-      el.style.top = f.y + '%';
-      el.style.width = '3%';
-      el.style.aspectRatio = '1/1';
-      el.style.transform = 'translate(-50%,-50%)';
-      fpWrap.insertBefore(el, fpTooltip);
-    });
-  }
-
-  function showTooltip(target, info, badge) {
-    if (!fpTooltip || !fpWrap) return;
-    activeMarkerEl = target;
-    const rowsHtml = info.hasRows ? `
-      <div class="fp-tooltip-rows">${sessionsHtml(info.rows)}</div>` : '';
-    fpTooltip.innerHTML = `
-      <div class="fp-tooltip-head">
-        <span class="fp-tooltip-badge">${badge}</span>
-        <h5>${info.title}</h5>
-      </div>
-      <p class="fp-tooltip-room">${info.room || 'No room assigned'}</p>
-      ${info.cap ? `<p class="fp-tooltip-cap">${info.cap}</p>` : ''}
-      ${rowsHtml}`;
-    fpTooltip.hidden = false;
-
-    const wrapRect = fpWrap.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-    let left = targetRect.left - wrapRect.left + targetRect.width / 2;
-    let top = targetRect.top - wrapRect.top + targetRect.height + 10;
-
-    fpTooltip.style.left = '0px';
-    fpTooltip.style.top = '0px';
-    const tipRect = fpTooltip.getBoundingClientRect();
-    left = Math.max(8, Math.min(left - tipRect.width / 2, wrapRect.width - tipRect.width - 8));
-    if (top + tipRect.height > wrapRect.height) {
-      top = targetRect.top - wrapRect.top - tipRect.height - 10;
-    }
-    fpTooltip.style.left = left + 'px';
-    fpTooltip.style.top = top + 'px';
-
-    document.querySelectorAll('.venue-room-group').forEach(g => {
-      g.classList.toggle('is-highlighted', g.getAttribute('data-room-group') === ('m' + target.getAttribute('data-marker')));
-    });
-  }
-
-  function hideTooltip() {
-    if (!fpTooltip) return;
-    fpTooltip.hidden = true;
-    activeMarkerEl = null;
-    document.querySelectorAll('.venue-room-group').forEach(g => g.classList.remove('is-highlighted'));
-  }
-
-  function wireHotspots() {
-    if (!fpWrap) return;
-    fpWrap.querySelectorAll('.fp-marker').forEach(el => {
-      const no = parseInt(el.getAttribute('data-marker'), 10);
-      const open = () => {
-        const day = VENUE_DAYS[currentVenueDay];
-        const info = day && day.markers[no];
-        if (!info) return;
-        showTooltip(el, Object.assign({}, info, { hasRows: info.rows.length > 0 }), String(no).padStart(2, '0'));
-      };
-      el.addEventListener('mouseenter', open);
-      el.addEventListener('mouseleave', hideTooltip);
-      el.addEventListener('focus', open);
-      el.addEventListener('blur', hideTooltip);
-      el.addEventListener('click', open);
-    });
-    fpWrap.querySelectorAll('.fp-facility').forEach(el => {
-      const facility = FACILITIES.find(f => f.id === el.getAttribute('data-facility'));
-      if (!facility) return;
-      const open = () => showTooltip(el, Object.assign({}, facility, { hasRows: false }), facility.badge);
-      el.addEventListener('mouseenter', open);
-      el.addEventListener('mouseleave', hideTooltip);
-      el.addEventListener('focus', open);
-      el.addEventListener('blur', hideTooltip);
-      el.addEventListener('click', open);
-    });
-  }
-
   function setVenueDay(day) {
     currentVenueDay = day;
-    hideTooltip();
+    const mapImg = MAP_IMAGES[day];
+    if (mapImg) {
+      if (venueFloorplanFrame && venueFloorplanFrame.getAttribute('src') !== mapImg.src) {
+        venueFloorplanFrame.src = mapImg.src;
+        venueFloorplanFrame.title = mapImg.title;
+      }
+      if (mapLightboxFrame && mapLightboxFrame.getAttribute('src') !== mapImg.src) {
+        mapLightboxFrame.src = mapImg.src;
+        mapLightboxFrame.title = mapImg.title + ', zoomed in';
+      }
+    }
     if (VENUE_DAYS[day]) {
       if (venueLive) venueLive.hidden = false;
       if (venueSoon) venueSoon.hidden = true;
@@ -502,10 +400,6 @@
     });
   });
 
-  if (venuePlanImg) {
-    if (venuePlanImg.complete) { buildHotspots(); wireHotspots(); }
-    else venuePlanImg.addEventListener('load', () => { buildHotspots(); wireHotspots(); });
-  }
   setVenueDay(1);
 
   /* ---------- Badge circles: tap to reveal on touch devices ---------- */
@@ -516,6 +410,30 @@
       if (!isActive) circle.classList.add('is-active');
     });
   });
+
+  /* ---------- Responsive floor plan embeds: scale fixed-size iframes to fit their container ---------- */
+  const floorplanEmbeds = Array.from(document.querySelectorAll('.floorplan-embed'));
+  function scaleFloorplanEmbed(embed) {
+    const iframe = embed.querySelector('iframe');
+    if (!iframe) return;
+    const nativeW = parseFloat(embed.getAttribute('data-native-w'), 10);
+    const nativeH = parseFloat(embed.getAttribute('data-native-h'), 10);
+    const containerW = embed.getBoundingClientRect().width;
+    if (!nativeW || !nativeH || !containerW) return;
+    const scale = containerW / nativeW;
+    iframe.style.width = nativeW + 'px';
+    iframe.style.height = nativeH + 'px';
+    iframe.style.transform = `scale(${scale})`;
+    embed.style.height = (nativeH * scale) + 'px';
+  }
+  function scaleAllFloorplanEmbeds() {
+    floorplanEmbeds.forEach(scaleFloorplanEmbed);
+  }
+  if (floorplanEmbeds.length) {
+    scaleAllFloorplanEmbeds();
+    window.addEventListener('resize', scaleAllFloorplanEmbeds);
+    venueTabs.forEach(tab => tab.addEventListener('click', () => setTimeout(scaleAllFloorplanEmbeds, 0)));
+  }
 
   /* ---------- Venue map zoom lightbox ---------- */
   const mapZoomBtn = document.getElementById('mapZoomBtn');

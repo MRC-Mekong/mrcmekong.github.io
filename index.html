@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
 <link rel="preload" href="assets/hero-banner.mp4" as="video" type="video/mp4" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=45">
+<link rel="stylesheet" href="css/style.css?v=47">
 </head>
 <body>
 
@@ -271,15 +271,16 @@
 
           <div class="venue-live" id="venueLive">
             <div class="venue-map-col">
-              <p class="venue-hint">Hover or tap a marker to see what&rsquo;s on</p>
+              <p class="venue-hint">See the full programme by room below</p>
               <div class="fp-wrap" id="fpWrap">
-                <img src="assets/venue-plan.png" alt="Isometric venue floor plan with numbered session markers" class="venue-plan-img" id="venuePlanImg">
-                <div class="fp-tooltip" id="fpTooltip" hidden></div>
+                <div class="floorplan-embed" id="venueFloorplanEmbed" data-native-w="1446" data-native-h="1540">
+                  <iframe id="venueFloorplanFrame" src="assets/floorplans/day1.html" title="Venue floor plan" loading="lazy"></iframe>
+                </div>
                 <button type="button" class="map-zoom-btn" id="mapZoomBtn" aria-label="Zoom into the venue map">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35M9 11h4M11 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </button>
               </div>
-              <p class="venue-fineprint">Indicative isometric layout &middot; not to scale. Room assignments subject to confirmation.</p>
+              <p class="venue-fineprint">Indicative floor plan &middot; not to scale. Room assignments subject to confirmation.</p>
             </div>
 
             <div class="venue-programme-col" id="dayProgramme">
@@ -302,50 +303,8 @@
         <h3 class="exhibition-heading">Exhibition Hall</h3>
 
         <div class="venue-stage">
-          <div class="exhibition-layout">
-
-            <div class="exhibition-booths" aria-label="Exhibition booths, 40 total">
-              <span class="booth-chip"><span class="booth-no">1</span></span>
-              <span class="booth-chip"><span class="booth-no">2</span></span>
-              <span class="booth-chip"><span class="booth-no">3</span></span>
-              <span class="booth-chip"><span class="booth-no">4</span></span>
-              <span class="booth-chip"><span class="booth-no">5</span></span>
-              <span class="booth-chip"><span class="booth-no">6</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">7</span><span class="booth-name">Sweden</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">8</span><span class="booth-name">Japan</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">9</span><span class="booth-name">Australia</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">10</span><span class="booth-name">MRC</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">11</span><span class="booth-name">MRC</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">12</span><span class="booth-name">Switzerland</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">13</span><span class="booth-name">Germany</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">14</span><span class="booth-name">UK</span></span>
-              <span class="booth-chip"><span class="booth-no">15</span></span>
-              <span class="booth-chip"><span class="booth-no">16</span></span>
-              <span class="booth-chip"><span class="booth-no">17</span></span>
-              <span class="booth-chip"><span class="booth-no">18</span></span>
-              <span class="booth-chip"><span class="booth-no">19</span></span>
-              <span class="booth-chip"><span class="booth-no">20</span></span>
-              <span class="booth-chip"><span class="booth-no">21</span></span>
-              <span class="booth-chip"><span class="booth-no">22</span></span>
-              <span class="booth-chip"><span class="booth-no">23</span></span>
-              <span class="booth-chip"><span class="booth-no">24</span></span>
-              <span class="booth-chip"><span class="booth-no">25</span></span>
-              <span class="booth-chip"><span class="booth-no">26</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">27</span><span class="booth-name">Canada</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">28</span><span class="booth-name">France</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">29</span><span class="booth-name">Korea</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">30</span><span class="booth-name">TNMC</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">31</span><span class="booth-name">TNMC</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">32</span><span class="booth-name">New Zealand</span></span>
-              <span class="booth-chip is-assigned"><span class="booth-no">33</span><span class="booth-name">United States</span></span>
-              <span class="booth-chip"><span class="booth-no">34</span></span>
-              <span class="booth-chip"><span class="booth-no">35</span></span>
-              <span class="booth-chip"><span class="booth-no">36</span></span>
-              <span class="booth-chip"><span class="booth-no">37</span></span>
-              <span class="booth-chip"><span class="booth-no">38</span></span>
-              <span class="booth-chip"><span class="booth-no">39</span></span>
-              <span class="booth-chip"><span class="booth-no">40</span></span>
-            </div>
+          <div class="floorplan-embed" id="exhibitionFloorplanEmbed" data-native-w="1072" data-native-h="1446">
+            <iframe id="exhibitionFloorplanFrame" src="assets/floorplans/exhibition.html" title="Exhibition hall floor plan" loading="lazy"></iframe>
           </div>
 
           <p class="venue-fineprint">Exhibition Hall &middot; Plenary Hall 4 &middot; 40 booths total. Booth assignments subject to confirmation.</p>
@@ -610,10 +569,10 @@
   </button>
   <p class="map-lightbox-hint">Pinch or scroll to zoom &middot; drag to pan</p>
   <div class="map-lightbox-scroll">
-    <img src="assets/venue-plan.png" alt="Isometric venue floor plan, zoomed in">
+    <iframe id="mapLightboxFrame" src="assets/floorplans/day1.html" title="Venue floor plan, zoomed in" class="map-lightbox-iframe"></iframe>
   </div>
 </div>
 
-<script src="js/main.js?v=19"></script>
+<script src="js/main.js?v=21"></script>
 </body>
 </html>
