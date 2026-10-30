@@ -555,14 +555,6 @@ em{font-style:normal;font-weight:800;color:var(--gold-500);}
 .venue-soon p{max-width:420px;margin:0;}
 
 /* ============================================================
-   Exhibition sub-section
-   ============================================================ */
-.exhibition-panel{margin-top:32px;}
-.exhibition-heading{
-  font-family:var(--font-display);font-size:1.3rem;color:var(--navy-950);margin:0 0 24px;
-}
-
-/* ============================================================
    Summit timeline
    ============================================================ */
 .timeline-track{
