@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
 <link rel="preload" href="assets/hero-banner.mp4" as="video" type="video/mp4" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=47">
+<link rel="stylesheet" href="css/style.css?v=48">
 </head>
 <body>
 
@@ -271,9 +271,14 @@
 
           <div class="venue-live" id="venueLive">
             <div class="venue-map-col">
-              <p class="venue-hint">See the full programme by room below</p>
+              <div class="venue-views" role="group" aria-label="Map view">
+                <button type="button" class="venue-view is-active" data-view="full" aria-pressed="true">Full floor plan</button>
+                <button type="button" class="venue-view" data-view="halls" aria-pressed="false">Plenary Halls &amp; Exhibition</button>
+                <button type="button" class="venue-view" data-view="rooms" aria-pressed="false">Meeting Rooms &amp; Services</button>
+              </div>
+              <p class="venue-hint">Hover or tap any space for its sessions &middot; see the full programme by room below</p>
               <div class="fp-wrap" id="fpWrap">
-                <div class="floorplan-embed" id="venueFloorplanEmbed" data-native-w="1446" data-native-h="1540">
+                <div class="floorplan-embed" id="venueFloorplanEmbed" data-native-w="1832" data-native-h="1920">
                   <iframe id="venueFloorplanFrame" src="assets/floorplans/day1.html" title="Venue floor plan" loading="lazy"></iframe>
                 </div>
                 <button type="button" class="map-zoom-btn" id="mapZoomBtn" aria-label="Zoom into the venue map">
@@ -573,6 +578,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=21"></script>
+<script src="js/main.js?v=22"></script>
 </body>
 </html>

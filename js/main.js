@@ -214,109 +214,114 @@
   }, { threshold: 0.5 });
   stats.forEach(el => statsObserver.observe(el));
 
-  /* ---------- Venue Map: isometric plan + programme by room ---------- */
-  const MARKERS = [
-    { no: 1,  x: 90.93, y: 41.82 },
-    { no: 2,  x: 79.63, y: 53.91 },
-    { no: 3,  x: 60.48, y: 65.57 },
-    { no: 4,  x: 63.48, y: 69.37 },
-    { no: 5,  x: 72.95, y: 71.05 },
-    { no: 6,  x: 70.92, y: 73.04 },
-    { no: 7,  x: 69.06, y: 75.10 },
-    { no: 8,  x: 67.00, y: 77.34 },
-    { no: 9,  x: 62.65, y: 81.58 },
-    { no: 10, x: 60.32, y: 83.95 },
-    { no: 11, x: 58.49, y: 85.76 },
-    { no: 12, x: 56.40, y: 88.32 },
-    { no: 13, x: 54.37, y: 84.39 },
-    { no: 14, x: 36.16, y: 79.71 },
-    { no: 15, x: 33.57, y: 76.85 },
-    { no: 16, x: 31.01, y: 67.81 },
-    { no: 17, x: 24.93, y: 74.29 }
-  ];
-
-  const MAP_IMAGES = {
-    1: { src: 'assets/floorplans/day1.html', title: 'Day 1 venue floor plan' },
-    2: { src: 'assets/floorplans/day2.html', title: 'Day 2 venue floor plan' }
+  /* ---------- Venue Map: interactive floor plans + programme by room ---------- */
+  // Three views per day: full floor plan plus two zoomed close-ups
+  const MAP_VIEWS = {
+    full:  { suffix: '',       label: 'floor plan',                    w: 1832, h: 1920 },
+    halls: { suffix: '-halls', label: 'Plenary Halls & Exhibition',    w: 1488, h: 1600 },
+    rooms: { suffix: '-rooms', label: 'Meeting Rooms & Services',      w: 1324, h: 1716 }
   };
+  const MAP_DAYS = [1, 2];
 
+  // Programme by room, from the 5th MRC International Conference agenda (draft, 19 Oct 2026)
   const VENUE_DAYS = {
-    1: {
-      markers: {
-        1: { title: 'Lunch & Dinner', room: 'Plenary Hall 3', cap: '', rows: [] },
-        2: { title: 'Plenary Session', room: 'Plenary Hall 2 / Plenary Hall 1', cap: '200 participants', rows: [
-          { t: '09:00', s: 'Welcome Session' },
-          { t: '09:25', s: 'Conference Objective and Structure' },
-          { t: '09:30', s: 'Opening Sessions: Mekong Developments, Challenges, and Opportunities' },
-          { t: '10:50', s: 'Summary of Keynotes' },
-          { t: '11:00', s: 'Visit to Conference Exhibition' },
-          { t: '13:30', s: '1A: “Advancing Water Flow and Hydropower Coordination”' },
-          { t: '15:30', s: '1D: Youth-led Riverpreneur Business Idea Challenge' }
+    1: [
+      { room: 'Plenary Hall 1 & 2 · Plenary Session', rows: [
+        { t: '08:00', s: 'Registration' },
+        { t: '09:00', s: 'Welcome Session', p: [
+          'Setting the scene cultural performance',
+          'Welcome remarks: Ms. Busadee Santipitaks, Chief Executive Officer, Mekong River Commission Secretariat',
+          'Welcome remarks: Mr. Chadchart Sittipunt, Governor of Bangkok',
+          'Opening remarks: Chairperson of the Thai National Mekong Committee, Member of the MRC Council for Thailand'
         ] },
-        3: { title: '1B – 1E', room: 'Room 111C – 110C', cap: '200 participants', rows: [
-          { t: '13:30', s: '1B: “Enhancing Data, Monitoring, and Modelling Capabilities for Decision Support”' },
-          { t: '15:30', s: '1E: “Advancing Community Innovations for River Livelihoods”' }
+        { t: '09:35', s: 'Conference Objective and Structure' },
+        { t: '09:40', s: 'Opening Sessions: Mekong Developments, Challenges, and Opportunities', p: [
+          'Keynote 1: From the UN Water Action Agenda to Mekong Action – Ms. Retno Marsudi, UN Special Envoy on Water',
+          'Keynote 2: Science to Solutions: Advancing Basin Management Through Data, Models, and Policy – Professor Kaveh Madani, United Nations University',
+          'Keynote 3: Youth’s Perspectives on Climate, Health, and River Resilience – Moroti Adegboyega, Winner of the Stockholm Junior Water Prize 2026',
+          'Keynote 4: Growing Together and Stronger for People, Partnership and Prosperity in the Mekong River Basin – Ms. Busadee Santipitaks, CEO, MRCS'
         ] },
-        4: { title: '1C – 1F', room: 'Room 111B – 110A', cap: '200 participants', rows: [
-          { t: '13:30', s: '1C: “Empowering Communities through Citizen Science”' },
-          { t: '15:30', s: '1F: In Conversation – The Water Leaders’ Table' }
+        { t: '10:50', s: 'Summary of keynotes' },
+        { t: '13:30', s: 'MRC Beyond 2030: What Will a Self-Financing MRC Look Like?', p: [
+          'Panel: MRC Joint Committee Members for Cambodia, Lao PDR, Thailand and Viet Nam; CEO, MRCS; Regional Head of Project, Germany',
+          'Moderator: Dr. Susanne Schmeier'
+        ] }
+      ] },
+      { room: 'Plenary Hall 1', rows: [
+        { t: '14:10', s: '1A: Community Knowledge and Action for Climate and Livelihood Resilience' },
+        { t: '15:30', s: '2A: Mekong Game Lab: Solving Development Challenges Through Games' }
+      ] },
+      { room: 'Plenary Hall 2', rows: [
+        { t: '14:10', s: '1B: Inclusive Cooperation and Engagement on Water Infrastructure Development' },
+        { t: '15:30', s: '2B: In Conversation – The Water Leaders’ Table' }
+      ] },
+      { room: 'Meeting Room 1', rows: [
+        { t: '14:10', s: '1C: Empowering Communities through Citizen Science' },
+        { t: '15:30', s: '2C: Monitoring the Mekong Together: From Data to Action' }
+      ] },
+      { room: 'Meeting Room 2', rows: [
+        { t: '14:10', s: '1D: Enhancing Data, Monitoring, and Modelling Capabilities for Decision Support' },
+        { t: '15:30', s: '2D: Advancing Water Flow and Hydropower Coordination for Sustainable Energy Cooperation' }
+      ] },
+      { room: 'Exhibition Hall', rows: [
+        { t: '11:00', s: 'Visit to Conference Exhibition', p: [
+          'Brief tour for the Minister, Governor and Joint Committee Members, led by Ms. Busadee Santipitaks, CEO, MRCS'
+        ] }
+      ] },
+      { room: 'Plenary Hall 3 · Lunch and Dinner', rows: [
+        { t: '', s: 'Lunch Break' }
+      ] }
+    ],
+    2: [
+      { room: 'Plenary Hall 1', rows: [
+        { t: '09:00', s: 'Summary of Day One and Opening of Day Two, and Setting the Scene for Day Two' },
+        { t: '09:30', s: '3A: Smart Agriculture, Aquaculture, and Water Quality' },
+        { t: '11:00', s: 'Plenary Session: Reflections on the International Conference and Ways Forward', p: [
+          'Facilitator: Dr. Susanne Schmeier',
+          'Speakers: DPs, Youth (Mekong River Basin), Community and Partner Organization Representatives'
         ] },
-        5: { title: 'Side Event', room: 'Room 120', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed' }] },
-        6: { title: 'Private Room', room: '', cap: '', rows: [] },
-        7: { title: 'Private Room', room: '', cap: '', rows: [] },
-        8: { title: 'Side Event', room: 'Room 117', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed · TNMCs' }] },
-        9: { title: 'Delegates Room', room: 'Room 116 · TNMCs', cap: '100 participants', rows: [] },
-        10: { title: 'Delegates Room', room: 'Room 115 · CNMCs', cap: '100 participants', rows: [] },
-        11: { title: 'Delegates Room', room: 'Room 114 · VNMCs', cap: '100 participants', rows: [] },
-        12: { title: 'Delegates Room', room: 'Room 112 · LNMCs', cap: '100 participants', rows: [] },
-        13: { title: 'Coffee Break Area 1', room: 'Room C102', cap: '100 participants', rows: [] },
-        14: { title: 'Organiser Room', room: 'Room 107A-B · MRCs', cap: '100 participants', rows: [] },
-        15: { title: 'Organiser Room', room: 'Room 106 · TNMCs', cap: '100 participants', rows: [] },
-        16: { title: 'Media Room', room: 'Room 105', cap: '100 participants', rows: [] },
-        17: { title: 'Coffee Break Area 2', room: 'Room C101', cap: '100 participants', rows: [] }
-      }
-    },
-    2: {
-      markers: {
-        1: { title: 'Lunch & Dinner', room: 'Plenary Hall 3', cap: '', rows: [] },
-        2: { title: 'Plenary Session', room: 'Plenary Hall 2 / Plenary Hall 1', cap: '200 participants', rows: [
-          { t: '09:00', s: 'Summary of Day One and Opening of Day Two' },
-          { t: '09:15', s: '2A: Digital Twin Technology for Transboundary River Management · Plenary Hall 1' },
-          { t: '11:00', s: 'Reflections on the International Conference and Ways Forward' },
-          { t: '12:00', s: 'Conference Key Messages and Closing Session' }
-        ] },
-        3: { title: '2B', room: 'Room 111C – 110C', cap: '200 participants', rows: [
-          { t: '09:15', s: '2B: Smart Agriculture, Aquaculture, and Water Quality' }
-        ] },
-        4: { title: '2C', room: 'Room 111B – 110A', cap: '200 participants', rows: [
-          { t: '13:00', s: 'Programme to be confirmed' }
-        ] },
-        5: { title: 'Side Event', room: 'Room 120', cap: '100 participants', rows: [
-          { t: '12:00', s: 'Mekong Youth Innovation Showcase Exhibition' },
-          { t: '', s: 'Community Knowledge Marketplace featuring tools, local products, and resilience stories' },
-          { t: '', s: 'Sister River Dialogue with other basin organisations' }
-        ] },
-        6: { title: 'Private Room', room: '', cap: '', rows: [] },
-        7: { title: 'Private Room', room: '', cap: '', rows: [] },
-        8: { title: 'Side Event', room: 'Room 117 · TNMCs', cap: '100 participants', rows: [{ t: '12:00', s: 'Programme to be confirmed' }] },
-        9: { title: 'Delegates Room', room: 'Room 116 · TNMCs', cap: '100 participants', rows: [] },
-        10: { title: 'Delegates Room', room: 'Room 115 · CNMCs', cap: '100 participants', rows: [] },
-        11: { title: 'Delegates Room', room: 'Room 114 · VNMCs', cap: '100 participants', rows: [] },
-        12: { title: 'Delegates Room', room: 'Room 112 · LNMCs', cap: '100 participants', rows: [] },
-        13: { title: 'Coffee Break Area 1', room: 'Room C102', cap: '100 participants', rows: [] },
-        14: { title: 'Organiser Room', room: 'Room 107A-B · MRCs', cap: '100 participants', rows: [] },
-        15: { title: 'Organiser Room', room: 'Room 106 · TNMCs', cap: '100 participants', rows: [] },
-        16: { title: 'Media Room', room: 'Room 105', cap: '100 participants', rows: [] },
-        17: { title: 'Coffee Break Area 2', room: 'Room C101', cap: '100 participants', rows: [] }
-      }
-    }
+        { t: '12:00', s: 'Conference Key Messages and Closing Session', p: [
+          'Key messages to the Ministerial Meeting and the Summit: Ms. Busadee Santipitaks, CEO, MRCS',
+          'Closing remarks: Joint Committee Chair'
+        ] }
+      ] },
+      { room: 'Plenary Hall 2', rows: [
+        { t: '09:30', s: '3B: Youth-led Riverpreneur Challenge: Business Idea Pitch (Shark Tank) · 9:30–11:30' }
+      ] },
+      { room: 'Meeting Room 1', rows: [
+        { t: '09:30', s: '3C: From Nexus Thinking to Nexus Action: Solutions for the Mekong' }
+      ] },
+      { room: 'Meeting Room 2', rows: [
+        { t: '09:30', s: '3D: Through the Lens: Youth Stories of the Mekong' }
+      ] },
+      { room: 'Coffee Break Areas', rows: [
+        { t: '10:30', s: 'Coffee break' }
+      ] },
+      { room: 'Exhibition Hall', rows: [
+        { t: '', s: 'Exhibitions and Activities', p: [
+          'Mekong Youth Innovation Showcase Exhibition',
+          'Community Knowledge Marketplace featuring tools, local products, and resilience stories',
+          'Photo Booths',
+          'Interactive Games',
+          'Water Quality in Action: Test, Analyze and Understand'
+        ] }
+      ] },
+      { room: 'Room 120 · Side Event', rows: [
+        { t: '12:00', s: 'Sister River Dialogue with other basin organizations (Bilateral meeting)' }
+      ] },
+      { room: 'Room 117 · Side Event', rows: [
+        { t: '12:00', s: 'MOU signing' }
+      ] }
+    ]
   };
 
   const venueTabs = document.querySelectorAll('.venue-tab');
+  const venueViews = document.querySelectorAll('.venue-view');
   const venueLive = document.getElementById('venueLive');
   const venueSoon = document.getElementById('venueSoon');
   const venueDayHeading = document.getElementById('venueDayHeading');
   const venueRoomList = document.getElementById('venueRoomList');
+  const venueFloorplanEmbed = document.getElementById('venueFloorplanEmbed');
   const venueFloorplanFrame = document.getElementById('venueFloorplanFrame');
   const mapLightboxFrame = document.getElementById('mapLightboxFrame');
   const downloadMapBtn = document.getElementById('downloadMapBtn');
@@ -325,6 +330,7 @@
     2: { href: 'assets/venue-map-day2.pdf', filename: '5th-MRC-Summit-Venue-Map-Day-2.pdf' }
   };
   let currentVenueDay = 1;
+  let currentVenueView = 'full';
 
   function sessionsHtml(rows) {
     if (!rows || !rows.length) return '<p class="fp-empty">No sessions scheduled.</p>';
@@ -333,37 +339,58 @@
         <span class="venue-session-time">${r.t || ''}</span>
         <div class="venue-session-body">
           <p class="venue-session-title">${r.s}</p>
+          ${r.p ? `<ul class="venue-session-people">${r.p.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
         </div>
       </div>`).join('');
   }
 
   function renderRoomList(day) {
-    const data = VENUE_DAYS[day];
-    if (!venueRoomList || !data) return;
-    venueRoomList.innerHTML = MARKERS.map(m => {
-      const info = data.markers[m.no];
-      if (!info || !info.rows.length) return '';
-      return `
-        <div class="venue-room-group" data-room-group="m${m.no}">
-          <h4>${info.room || info.title}</h4>
-          ${sessionsHtml(info.rows)}
-        </div>`;
-    }).join('');
+    const rooms = VENUE_DAYS[day];
+    if (!venueRoomList || !rooms) return;
+    venueRoomList.innerHTML = rooms.map(g => `
+      <div class="venue-room-group">
+        <h4>${g.room}</h4>
+        ${sessionsHtml(g.rows)}
+      </div>`).join('');
+  }
+
+  function showMap(day, view) {
+    if (MAP_DAYS.indexOf(day) < 0) return;
+    const v = MAP_VIEWS[view];
+    const src = `assets/floorplans/day${day}${v.suffix}.html`;
+    const title = `Day ${day} ${v.label}`;
+    if (venueFloorplanEmbed) {
+      venueFloorplanEmbed.setAttribute('data-native-w', v.w);
+      venueFloorplanEmbed.setAttribute('data-native-h', v.h);
+    }
+    if (venueFloorplanFrame && venueFloorplanFrame.getAttribute('src') !== src) {
+      venueFloorplanFrame.src = src;
+      venueFloorplanFrame.title = title;
+    }
+    if (mapLightboxFrame) {
+      mapLightboxFrame.style.width = v.w + 'px';
+      mapLightboxFrame.style.height = v.h + 'px';
+      if (mapLightboxFrame.getAttribute('src') !== src) {
+        mapLightboxFrame.src = src;
+        mapLightboxFrame.title = title + ', zoomed in';
+      }
+    }
+    if (venueFloorplanEmbed) scaleFloorplanEmbed(venueFloorplanEmbed);
+  }
+
+  function setVenueView(view) {
+    currentVenueView = view;
+    venueViews.forEach(b => {
+      const on = b.getAttribute('data-view') === view;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    showMap(currentVenueDay, view);
   }
 
   function setVenueDay(day) {
     currentVenueDay = day;
-    const mapImg = MAP_IMAGES[day];
-    if (mapImg) {
-      if (venueFloorplanFrame && venueFloorplanFrame.getAttribute('src') !== mapImg.src) {
-        venueFloorplanFrame.src = mapImg.src;
-        venueFloorplanFrame.title = mapImg.title;
-      }
-      if (mapLightboxFrame && mapLightboxFrame.getAttribute('src') !== mapImg.src) {
-        mapLightboxFrame.src = mapImg.src;
-        mapLightboxFrame.title = mapImg.title + ', zoomed in';
-      }
-    }
+    showMap(day, currentVenueView);
     if (VENUE_DAYS[day]) {
       if (venueLive) venueLive.hidden = false;
       if (venueSoon) venueSoon.hidden = true;
@@ -399,6 +426,7 @@
       setVenueDay(parseInt(tab.getAttribute('data-day'), 10));
     });
   });
+  venueViews.forEach(b => b.addEventListener('click', () => setVenueView(b.getAttribute('data-view'))));
 
   setVenueDay(1);
 
