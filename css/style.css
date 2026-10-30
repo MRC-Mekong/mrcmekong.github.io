@@ -532,6 +532,7 @@ em{font-style:normal;font-weight:800;color:var(--gold-500);}
 .venue-fineprint{margin:14px 4px 0;font-size:.78rem;color:var(--ink-soft);}
 
 .venue-day-heading{font-family:var(--font-display);font-size:1.2rem;color:var(--navy-950);margin:0 0 16px;}
+.venue-day-note{margin:-10px 0 16px;font-size:.82rem;font-style:italic;color:var(--ink-soft);}
 .venue-room-list{display:flex;flex-direction:column;gap:10px;}
 .venue-room-group{
   background:var(--white);border:1px solid rgba(12,34,69,.1);border-radius:14px;padding:16px 18px;
